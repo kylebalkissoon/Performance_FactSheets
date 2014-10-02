@@ -1,0 +1,126 @@
+%%% Sheet that generates a 2-pager factsheet with trailing returns logo and
+%By Kyle Balkissoon based off 
+%Original Latex template by Brian Peterson and Sheng Gao
+%
+\documentclass[10pt]{article}
+
+% Call packages
+% ---------------
+\usepackage{mathptmx}    % font
+\usepackage[T1]{fontenc}  % font encoding
+\usepackage[a4paper,top=0.2in, left=0.3in, right=0.3in,bottom=0.3in]{geometry} % geometry/margins of page
+\usepackage{multicol}    % multicolumn environments
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage[export]{adjustbox}%
+\usepackage[utf8]{inputenc}
+\usepackage[table]{xcolor}
+\arrayrulecolor[HTML]{FFFFFF}
+% Begin document
+% ---------------
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+<<tidy=FALSE,echo=FALSE, results=hide,warning=TRUE,message=FALSE>>=
+library(tools)
+library(PerformanceAnalytics)
+library(quantmod)
+library(quantstrat)
+options(digits=6, width=70)
+
+############################################
+### Load the Data from the function
+#############################################
+load(file='R.rdata')
+load(file='Rb.rdata')
+load(file="S1.rdata")
+load(file="S2.rdata")
+load(file="S3.rdata")
+load(file="S4.rdata")
+load(file="S5.rdata")
+load(file="S6.rdata")
+load(file="S7.rdata")
+
+load(file="graph_par.rdata")
+
+###Generate cum return
+
+cum_return_chart = chart.CumReturns(R,Rb,auto.grid=FALSE,main='Performance of $1 Invested',xlab='Date')
+
+for(i in 1:3){
+if(grepl("chart.",get(paste0("S",i)))){
+    png(filename=paste0("S",i,".png"),width=5,height=2,units="in",res=600,pointsize=10)
+eval(parse(text=get(paste0("S",i))))
+dev.off()
+}else{
+  
+  tab_1 = eval(parse(text=get(paste0("S",i))))
+  png(filename=paste0("S",i,".png"),width=5,height=2,units="in",res=600,pointsize=10)
+  eval(parse(text=paste0("textplot(tab_1",graph_par[[i]])))
+  dev.off()
+
+  
+  
+}}
+
+for(i in 4:7){
+if(grepl("chart.",get(paste0("S",i)))){
+    png(filename=paste0("S",i,".png"),width=4,height=2,units="in",res=600,pointsize=10)
+eval(parse(text=get(paste0("S",i))))
+dev.off()
+}else{
+  
+  tab_1 = eval(parse(text=get(paste0("S",i))))
+  png(filename=paste0("S",i,".png"),width=4,height=2,units="in",res=600,pointsize=10)
+  eval(parse(text=paste0("textplot(tab_1",graph_par[[i]])))
+  dev.off()
+
+  
+  
+}}
+
+
+                            
+@
+
+<<tidy=FALSE,echo=FALSE,results=hide,message=FALSE,warning=TRUE>>=
+# 
+png(filename='PerformanceSummary.png',width=8,height=7.5,units="in",res=600,pointsize=20)
+par(mar=c(2, 2, 2 ,2),cex=0.7)
+chart.CumReturns(cbind(R,Rb), main='Performance of $1 Invested',  colorset=bluefocus, cex.axis=1.2,cex.legend=1.1,cex.labels=1.2,wealth.index=TRUE,lwd=3,xlab="Date",auto.grid=FALSE)
+dev.off()
+
+
+@
+
+\begin{table}[h]
+\centering
+\includegraphics[width=7in]{C:/Users/Kyle/Pictures/CKLOGO.png}
+
+
+\begin{tabular}{| p{10.5cm} | p{7.5cm} |}
+
+
+\multicolumn{2}{|l|}{ \LARGE{\emph{Low Carbon U.S.} As of June 30 2014}}\\
+
+
+
+
+\hline
+
+\multirow{4}{*}{\includegraphics[width=4.15in]{PerformanceSummary.png} } & \LARGE{Commentary} \\
+& \small{Missouri Governor Jay Nixon has directed the state’s National Guard to begin leaving Ferguson as unrest subsides after more than a week of protest following the shooting death of an unarmed black teenager.“As we continue to see improvement, I have ordered the Missouri National Guard to begin a systematic process of withdrawing from the City of Ferguson,” Nixon said today in an e-mailed statement.Nixon, a 58-year-old Democrat, brought in the forces on Aug. 18 as the violence escalated, when organized groups of protesters attacked police officers using firearms and gasoline bombs, leading authorities to fire a barrage of tear gas into the streets.  }\\
+&\includegraphics[width=2.9in,height=2in]{S4.png}\\[-2mm]
+\includegraphics[width=4.15in,height=2in]{S1.png} &\includegraphics[width=2.9in,height=2in]{S5.png}\\[-1cm]
+\includegraphics[width=4.15in,height=2in]{S2.png} &\includegraphics[width=2.9in,height=2in]{S6.png}\\[-1cm]
+\includegraphics[width=4.15in,height=2in]{S3.png} & \includegraphics[width=2.9in,height=2in]{S7.png}\\[-1cm]
+
+
+\hline
+
+\end{tabular}
+\end{table}
+
+
+\end{document}
